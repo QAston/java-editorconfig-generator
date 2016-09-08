@@ -13,6 +13,11 @@ import java.util.List;
 public class DirectoryConfigGenerator {
 	private WhitespaceEstimatorFactory estimatorFactory;
 
+	public DirectoryConfigGenerator(WhitespaceEstimatorFactory estimatorFactory) {
+		super();
+		this.estimatorFactory = estimatorFactory;
+	}
+
 	public void run(File directory, boolean root) {
 		if (!directory.exists())
 			return;
@@ -32,7 +37,7 @@ public class DirectoryConfigGenerator {
 				continue;
 			WhitespaceStyle style;
 			try {
-				style = e.estimateStyle(new BufferedReader(new FileReader(directory)));
+				style = e.estimateStyle(new BufferedReader(new FileReader(file)));
 			} catch (FileNotFoundException e1) {
 				throw new UncheckedIOException(e1);
 			}
@@ -42,9 +47,13 @@ public class DirectoryConfigGenerator {
 	}
 
 	private void saveConfig(File directory, List<ConfigEntry> entries, boolean root) {
+		if (entries.isEmpty() && !root)
+			return;
 		try (FileWriter configWriter = new FileWriter(new File(directory, ".editorconfig"), false)) {
 			if (root)
 				configWriter.append("root=true\n");
+			if (entries.isEmpty())
+				return;
 			for (ConfigEntry e : entries) {
 				if (e.isEmpty())
 					continue;
