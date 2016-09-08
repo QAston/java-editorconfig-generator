@@ -56,12 +56,17 @@ public class JavaStyleEstimatorTest {
 
 	@Test
 	public void fileWithSingleIndentationTabIndicatiorHasRecognizedIntendation() {
-		expectResult("{\r\n\tpublic}", 1, '\t', "\r\n");
+		expectResult("{\r\n\tpublic}", null, '\t', "\r\n");
+	}
+
+	@Test
+	public void superficialTabbingIsTreatedAsPadding() {
+		expectResult("{\r\n\t\tpublic}", null, '\t', "\r\n");
 	}
 
 	@Test
 	public void fileWithSingleIndentationIndicatiorHasRecognizedIntendationIgnoringPadding() {
-		expectResult("{\r\n\t  public}", 1, '\t', "\r\n");
+		expectResult("{\r\n\t  public}", null, '\t', "\r\n");
 	}
 
 	@Test
@@ -71,6 +76,6 @@ public class JavaStyleEstimatorTest {
 
 	@Test
 	public void fileWithMultipleIntendationStyles() {
-		expectResult("{\r\n  static\n\t  public\n\t int\r\n private\r\n}", 1, '\t', "\r\n");
+		expectResult("{\r\n  static\n\t  public\n\t int\r\n private\r\n}", null, '\t', "\r\n");
 	}
 }

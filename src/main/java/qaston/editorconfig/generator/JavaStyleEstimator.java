@@ -45,7 +45,6 @@ public class JavaStyleEstimator implements WhitespaceStyleEstimator {
 		bufferedTokenStream.fill();
 		List<? extends Token> tokens = bufferedTokenStream.getTokens();
 		for (Token t : tokens) {
-			System.out.println(t);
 			if (t.getType() == Java8Lexer.LBRACE) {
 				indentLevel++;
 			}
@@ -72,14 +71,15 @@ public class JavaStyleEstimator implements WhitespaceStyleEstimator {
 			}
 		}
 
-		Optional<String> mostPopularWs = intendationCount.entrySet().stream()
-				.max(Comparator.comparing(Map.Entry::getValue)).map(Map.Entry::getKey);
+		Optional<String> mostPopularWs = intendationCount.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue))
+				.map(Map.Entry::getKey);
 
 		Character identStyle = null;
 		Integer identSize = null;
 		if (mostPopularWs.isPresent()) {
 			identStyle = mostPopularWs.get().charAt(0);
-			identSize = mostPopularWs.get().length();
+			if (identStyle == ' ')
+				identSize = mostPopularWs.get().length();
 		}
 
 		String lineEnding = null;
@@ -95,6 +95,8 @@ public class JavaStyleEstimator implements WhitespaceStyleEstimator {
 
 	private String removePadding(String text) {
 		char identStyle = text.charAt(0);
+		if (identStyle == '\t')
+			return "\t";
 		int identSize = 1;
 		while (identSize < text.length()) {
 			if (text.charAt(identSize) != identStyle)
