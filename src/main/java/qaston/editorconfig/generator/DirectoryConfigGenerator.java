@@ -64,7 +64,8 @@ public class DirectoryConfigGenerator {
 						wsRepr = "tab";
 					}
 					configWriter.append(String.format("indent_style = %1$s\n", wsRepr));
-					configWriter.append(String.format("indent_size = %1$s\n", e.style.indentSize));
+					if (e.style.indentSize != null)
+						configWriter.append(String.format("indent_size = %1$s\n", e.style.indentSize));
 				}
 				if (e.style.newlineStyle != null) {
 					String wsRepr = "lf";
